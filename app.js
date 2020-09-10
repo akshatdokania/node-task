@@ -1,15 +1,31 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const User = require('./models/users');
+
 
 const app=express();
 
-app.set('view engine', 'ejs');
+const dbURI = 'mongodb+srv://santaclaus000:Youneverknow@123@cluster0.2k2hp.mongodb.net/users?retryWrites=true&w=majority';
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then((result)=> app.listen(4000))
+  .catch((err)=>console.log(err));
 
-app.listen(4000);
+app.set('view engine', 'ejs');
 
 console.log('Listening for requests on port 4000');
 
-app.get('/details', (req,res)=>{
+app.get('/', (req,res)=>{
+  res.redirect('details');
+})
 
+app.get('/details', (req,res)=>{
+  User.find()
+  .then((result)=>{
+    res.render('details', {details: result})
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
 })
 
 app.use((req,res)=>{
